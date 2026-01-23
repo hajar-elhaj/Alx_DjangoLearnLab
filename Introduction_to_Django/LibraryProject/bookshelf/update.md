@@ -1,20 +1,11 @@
-\## Update Book
-
-```python
-
-book = Book.objects.get(title="1984")
+## Update Book
 
 book.title = "Nineteen Eighty-Four"
-
 book.save()
+Book.objects.get(pk=book.pk)
 
 
+# Output:
 
-book
-
-```
-
-\# Output:
-
-\# <Book: Nineteen Eighty-Four by George Orwell (1949)>
+<Book: Nineteen Eighty-Four by George Orwell (1949)>
 

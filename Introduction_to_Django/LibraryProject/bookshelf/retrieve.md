@@ -1,12 +1,9 @@
-\## Retrieve Book
+## Retrieve Book
 
-```python
+Book.objects.get(title='1984', author='George Orwell')
 
-Book.objects.all()
 
-```
+# Output:
 
-\# Output:
-
-\# <QuerySet \[<Book: 1984 by George Orwell (1949)>]>
+<QuerySet \[<Book: 1984 by George Orwell (1949)>]>
 

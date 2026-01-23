@@ -1,18 +1,9 @@
-\## Delete Book
-
-```python
-
-book = Book.objects.get(title="Nineteen Eighty-Four")
+## Delete Book
 
 book.delete()
-
-
-
 Book.objects.all()
 
-```
+# Output:
 
-\# Output:
-
-\# <QuerySet \[]>
+<QuerySet \[]>
 
