@@ -4,7 +4,7 @@ from .models import Book
 from .models import Library
 
 #listing all books stored in the database
-def book_list(request):
+def list_books(request):
     return render(request, 'relationship_app/list_books.html' , Book.objects.all())
 
 #listing all books available in a library
