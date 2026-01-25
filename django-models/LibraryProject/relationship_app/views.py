@@ -4,7 +4,6 @@ from .models import Book
 from .models import Library
 from django.contrib.auth.forms import UserCreationForm
 #from django.contrib.auth import login
-from django.contrib.auth.views import LoginView, LogoutView
 
 #listing all books stored in the database
 def list_books(request):
@@ -34,11 +33,3 @@ def register(request):
         form = UserCreationForm()
     
     return render(request, 'relationship_app/register.html', {'form': form})
-# Login view
-class CustomLoginView(LoginView):
-    template_name = 'relationship_app/login.html'  # your login template
-    redirect_authenticated_user = True  # if already logged in, redirect automatically
-
-# Logout view
-class CustomLogoutView(LogoutView):
-    template_name = 'relationship_app/logout.html'  # your logout template    
