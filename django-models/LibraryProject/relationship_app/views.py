@@ -2,8 +2,9 @@ from django.shortcuts import render , redirect
 from django.views.generic.detail import DetailView
 from .models import Book
 from .models import Library
-from django.contrib.auth.forms import UserCreationForm , AuthenticationForm
-from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
+from django.contrib.auth.views import LoginView, LogoutView
 
 #listing all books stored in the database
 def list_books(request):
@@ -34,19 +35,10 @@ def register(request):
     
     return render(request, 'relationship_app/register.html', {'form': form})
 # Login view
-def login_view(request):
-    if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            return redirect('/book/')  # redirect after login
-    else:
-        form = AuthenticationForm()
-    
-    return render(request, 'relationship_app/login.html', {'form': form})
+class CustomLoginView(LoginView):
+    template_name = 'relationship_app/login.html'  # your login template
+    redirect_authenticated_user = True  # if already logged in, redirect automatically
 
 # Logout view
-def logout_view(request):
-    logout(request)
-    return redirect('/login/')  # redirect after logout          
+class CustomLogoutView(LogoutView):
+    template_name = 'relationship_app/logout.html'  # your logout template    
