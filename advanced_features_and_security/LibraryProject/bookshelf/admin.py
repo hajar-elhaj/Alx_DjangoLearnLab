@@ -8,9 +8,6 @@ class BookAdmin(admin.ModelAdmin):
     search_fields = ('title', 'author')  # Add search box for title & author
     list_filter = ('publication_year',)  # Add filter sidebar for publication year
 
-# Register the Book model with the custom admin
-admin.site.register(Book, BookAdmin)
-
 
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
@@ -29,3 +26,9 @@ class CustomUserAdmin(UserAdmin):
     )
 
     list_display = ('username', 'email', 'is_staff', 'is_active')
+
+
+# Register the Book model with the custom admin
+admin.site.register(Book, BookAdmin)
+admin.site.register(CustomUser, CustomUserAdmin)
+
