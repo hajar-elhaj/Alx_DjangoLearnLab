@@ -15,10 +15,11 @@ Groups:
 Views are protected using @permission_required decorator.
 """
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render
 from .models import Book
+from .forms import ExampleForm
 
 
 #View a book
@@ -75,3 +76,14 @@ def delete_book(request, pk):
 def book_list(request):
     books = Book.objects.all()
     return render(request, 'bookshelf/book_list.html', {'books': books})
+
+
+def example_form_view(request):
+    if request.method == 'POST':
+        form = ExampleForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('book_list')  # or wherever you want
+    else:
+        form = ExampleForm()
+    return render(request, 'bookshelf/form_example.html', {'form': form})
