@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-4=*)_4)r)bd_0wa1!+hsue3jmyku2o&_++3j(bdsfxc#$qy55p'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -134,8 +134,6 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 
-# SECURITY SETTINGS
-DEBUG = False  # Always False in production!
 
 # Prevent XSS attacks
 SECURE_BROWSER_XSS_FILTER = True
@@ -150,7 +148,16 @@ X_FRAME_OPTIONS = 'DENY'
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
-# Optional: HSTS for HTTPS (if using HTTPS)
-SECURE_HSTS_SECONDS = 3600  # Adjust as needed
+# HTTPS & Security Settings
+SECURE_HSTS_SECONDS = 31536000 
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
+SECURE_SSL_REDIRECT = True  # Forces HTTPS in production
+
+
+
+
+
+
+
+
