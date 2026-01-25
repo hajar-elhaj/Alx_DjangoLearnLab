@@ -3,7 +3,7 @@ from django.views.generic.detail import DetailView
 from .models import Book
 from .models import Library
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import login
+#from django.contrib.auth import login
 from django.contrib.auth.views import LoginView, LogoutView
 
 #listing all books stored in the database
@@ -40,5 +40,5 @@ class CustomLoginView(LoginView):
     redirect_authenticated_user = True  # if already logged in, redirect automatically
 
 # Logout view
-class LogoutView(LogoutView):
+class CustomLogoutView(LogoutView):
     template_name = 'relationship_app/logout.html'  # your logout template    

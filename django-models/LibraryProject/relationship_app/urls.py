@@ -11,6 +11,6 @@ urlpatterns = [
         # Authentication URLs
     path('register/', views.register, name='register'),
     path('login/', views.CustomLoginView.as_view(), name='login'),
-    path('logout/', views.LogoutView.as_view(), name='logout'),
+    path('logout/', views.CustomLogoutView.as_view(), name='logout'),
     path('', RedirectView.as_view(url='/book/')),  # redirect root to /book/
 ]
