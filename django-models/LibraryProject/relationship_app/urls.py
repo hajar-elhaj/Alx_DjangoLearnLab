@@ -4,6 +4,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.views.generic import RedirectView
 from .views import list_books
 from .views import LibraryDetailView
+from . import role_views  # import the file we just created
 
 urlpatterns = [
     path('book/' , list_books, name = 'book_list'),
@@ -14,4 +15,9 @@ urlpatterns = [
     path('login/', LoginView.as_view(template_name='relationship_app/login.html'), name='login'),
     path('logout/', LogoutView.as_view(template_name='relationship_app/logout.html'), name='logout'),
     path('', RedirectView.as_view(url='/book/')),  # redirect root to /book/
+
+    # Role-based URLs
+    path('admin-view/', role_views.admin_view, name='admin_view'),
+    path('librarian-view/', role_views.librarian_view, name='librarian_view'),
+    path('member-view/', role_views.member_view, name='member_view'),
 ]
