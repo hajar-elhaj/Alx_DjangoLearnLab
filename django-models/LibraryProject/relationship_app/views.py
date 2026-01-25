@@ -40,5 +40,5 @@ class CustomLoginView(LoginView):
     redirect_authenticated_user = True  # if already logged in, redirect automatically
 
 # Logout view
-class CustomLogoutView(LogoutView):
+class LogoutView(LogoutView):
     template_name = 'relationship_app/logout.html'  # your logout template    
