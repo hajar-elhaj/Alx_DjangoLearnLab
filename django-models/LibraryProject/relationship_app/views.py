@@ -1,12 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render , redirect
 from django.views.generic.detail import DetailView
 from .models import Book
 from .models import Library
-from django.contrib.auth.forms import UserCreationForm
-from django.urls import reverse_lazy
-from django.views.generic.edit import CreateView
-from django.contrib.auth.views import LoginView, LogoutView
-from django.contrib.auth import login
+from django.contrib.auth.forms import UserCreationForm , AuthenticationForm
+from django.contrib.auth import login, logout, authenticate
 
 #listing all books stored in the database
 def list_books(request):
@@ -26,16 +23,30 @@ class LibraryDetailView(DetailView):
         return context
     
 # Registration view
-class RegisterView(CreateView):
-    form_class = UserCreationForm
-    template_name = 'relationship_app/register.html'
-    success_url = reverse_lazy('login')  # redirect after successful registration
-
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')  # redirect to login page after registration
+    else:
+        form = UserCreationForm()
+    
+    return render(request, 'relationship_app/register.html', {'form': form})
 # Login view
-class CustomLoginView(LoginView):
-    template_name = 'relationship_app/login.html'
+def login_view(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('/book/')  # redirect after login
+    else:
+        form = AuthenticationForm()
+    
+    return render(request, 'relationship_app/login.html', {'form': form})
 
 # Logout view
-class CustomLogoutView(LogoutView):
-    template_name = 'relationship_app/logout.html'  
-    next_page = '/login/'  # optional redirect after logout                 
+def logout_view(request):
+    logout(request)
+    return redirect('/login/')  # redirect after logout          

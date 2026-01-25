@@ -1,5 +1,6 @@
 from django.urls import path 
-from .views import RegisterView, CustomLoginView, CustomLogoutView
+from . import views
+from django.contrib.auth.views import LoginView, LogoutView
 from django.views.generic import RedirectView
 from .views import list_books
 from .views import LibraryDetailView
@@ -9,8 +10,8 @@ urlpatterns = [
     path('library/<int:pk>/' , LibraryDetailView.as_view() , name = 'library_detail'),
 
         # Authentication URLs
-    path('register/', RegisterView.as_view(), name='register'),
-    path('login/', CustomLoginView.as_view(), name='login'),
-    path('logout/', CustomLogoutView.as_view(), name='logout'),
+    path('register/', views.register, name='register'),
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
     path('', RedirectView.as_view(url='/book/')),  # redirect root to /book/
 ]
