@@ -30,5 +30,10 @@ class CustomUserAdmin(UserAdmin):
 
 # Register the Book model with the custom admin
 admin.site.register(Book, BookAdmin)
-admin.site.register(CustomUser, CustomUserAdmin)
+
+# Only register if not already registered
+try:
+    admin.site.register(CustomUser, CustomUserAdmin)
+except admin.sites.AlreadyRegistered:
+    pass
 

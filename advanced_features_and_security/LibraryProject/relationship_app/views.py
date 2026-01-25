@@ -1,3 +1,20 @@
+"""
+Permissions & Groups Setup:
+
+Custom permissions are defined on the Book model:
+- can_view
+- can_create
+- can_edit
+- can_delete
+
+Groups:
+- Viewers: can_view
+- Editors: can_view, can_create, can_edit
+- Admins: all permissions
+
+Views are protected using @permission_required decorator.
+"""
+
 from django.shortcuts import render , redirect , get_object_or_404
 from django.views.generic.detail import DetailView
 from .models import Book
@@ -64,38 +81,51 @@ def member_view(request):
     return render(request, 'relationship_app/member_view.html')
 
 
-# Add a new book
-@permission_required('relationship_app.can_add_book', raise_exception=True)
-def add_book(request):
+#View a book
+@permission_required('relationship_app.can_view', raise_exception=True)
+def view_books(request):
+    books = Book.objects.all()
+    return render(request, 'relationship_app/view_books.html', {'books': books})
+
+
+#Create a book
+@permission_required('relationship_app.can_create', raise_exception=True)
+def create_book(request):
     if request.method == 'POST':
-        form = BookForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('book_list')
-    else:
-        form = BookForm()
-    return render(request, 'relationship_app/add_book.html', {'form': form})
+        title = request.POST.get('title')
+        author = request.POST.get('author')
+        year = request.POST.get('publication_year')
+
+        Book.objects.create(
+            title=title,
+            author=author,
+            publication_year=year
+        )
+
+    return render(request, 'relationship_app/create_book.html')
+
 
 
 # Edit an existing book
-@permission_required('relationship_app.can_change_book', raise_exception=True)
+@permission_required('relationship_app.can_edit', raise_exception=True)
 def edit_book(request, pk):
-    book = get_object_or_404(Book, pk=pk)
+    book = Book.objects.get(pk=pk)
+
     if request.method == 'POST':
-        form = BookForm(request.POST, instance=book)
-        if form.is_valid():
-            form.save()
-            return redirect('book_list')
-    else:
-        form = BookForm(instance=book)
-    return render(request, 'relationship_app/edit_book.html', {'form': form, 'book': book})
+        book.title = request.POST.get('title')
+        book.author = request.POST.get('author')
+        book.publication_year = request.POST.get('publication_year')
+        book.save()
+
+    return render(request, 'relationship_app/edit_book.html', {'book': book})
 
 
 # Delete a book
-@permission_required('relationship_app.can_delete_book', raise_exception=True)
+@permission_required('relationship_app.can_delete', raise_exception=True)
 def delete_book(request, pk):
-    book = get_object_or_404(Book, pk=pk)
+    book = Book.objects.get(pk=pk)
+
     if request.method == 'POST':
         book.delete()
-        return redirect('book_list')
+
     return render(request, 'relationship_app/delete_book.html', {'book': book})
