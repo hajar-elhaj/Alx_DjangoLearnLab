@@ -21,6 +21,7 @@ from .forms import CommentForm
 from django.shortcuts import get_object_or_404
 
 from django.db.models import Q
+from taggit.models import Tag
 
 # User Registration
 def register_view(request):
@@ -171,6 +172,21 @@ class SearchResultsView(DjangoListView):
             return Post.objects.filter(
                 Q(title__icontains=query) |
                 Q(content__icontains=query) |
-                Q(tags__name__icontains=query)  # works with django-taggit
+                Q(tags__name__icontains=query)  
             ).distinct()
         return Post.objects.none()
+
+
+class PostByTagListView(DjangoListView):
+    model = Post
+    template_name = 'blog/post_list.html'  # reuse the same list template
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        tag_name = self.kwargs.get('tag_name')
+        return Post.objects.filter(tags__name__iexact=tag_name).order_by('-published_date')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tag_name'] = self.kwargs.get('tag_name')
+        return context
