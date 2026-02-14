@@ -103,17 +103,17 @@ class DetailView(DjangoDetailView):
 # Create a new post
 class CreateView(LoginRequiredMixin, DjangoCreateView):
     model = Post
-    fields = ['title', 'content']
+    form_class = PostForm  # use the form with TagWidget
     template_name = 'blog/post_form.html'
 
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
-
+    
 # Update a post
 class UpdateView(LoginRequiredMixin, UserPassesTestMixin, DjangoUpdateView):
     model = Post
-    fields = ['title', 'content']
+    form_class = PostForm  # use the form with TagWidget
     template_name = 'blog/post_form.html'
 
     def test_func(self):
