@@ -20,6 +20,8 @@ from .models import Comment
 from .forms import CommentForm
 from django.shortcuts import get_object_or_404
 
+from django.db.models import Q
+
 # User Registration
 def register_view(request):
     if request.method == 'POST':
@@ -92,6 +94,11 @@ class DetailView(DjangoDetailView):
     template_name = 'blog/post_detail.html'
     context_object_name = 'post'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = CommentForm()
+        return context
+
 
 # Create a new post
 class CreateView(LoginRequiredMixin, DjangoCreateView):
@@ -112,18 +119,6 @@ class UpdateView(LoginRequiredMixin, UserPassesTestMixin, DjangoUpdateView):
     def test_func(self):
         post = self.get_object()
         return self.request.user == post.author
-
-
-#Detail a post
-class DetailView(DjangoDetailView):
-    model = Post
-    template_name = 'blog/post_detail.html'
-    context_object_name = 'post'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['form'] = CommentForm()
-        return context
     
 # Delete a post  
 class DeleteView(DjangoDeleteView):
@@ -163,3 +158,19 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DjangoDeleteVie
         comment = self.get_object()
         return self.request.user == comment.author
     
+
+
+class SearchResultsView(DjangoListView):
+    model = Post
+    template_name = 'blog/search_results.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        if query:
+            return Post.objects.filter(
+                Q(title__icontains=query) |
+                Q(content__icontains=query) |
+                Q(tags__name__icontains=query)  # works with django-taggit
+            ).distinct()
+        return Post.objects.none()
