@@ -16,6 +16,10 @@ from django.views.generic import (
     DeleteView as DjangoDeleteView,
 )
 
+from .models import Comment
+from .forms import CommentForm
+from django.shortcuts import get_object_or_404
+
 # User Registration
 def register_view(request):
     if request.method == 'POST':
@@ -110,12 +114,52 @@ class UpdateView(LoginRequiredMixin, UserPassesTestMixin, DjangoUpdateView):
         return self.request.user == post.author
 
 
-# Delete a post
-class DeleteView(LoginRequiredMixin, UserPassesTestMixin, DjangoDeleteView):
+#Detail a post
+class DetailView(DjangoDetailView):
+    model = Post
+    template_name = 'blog/post_detail.html'
+    context_object_name = 'post'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = CommentForm()
+        return context
+    
+# Delete a post  
+class DeleteView(DjangoDeleteView):
     model = Post
     template_name = 'blog/post_confirm_delete.html'
-    success_url = reverse_lazy('post-list')
+    success_url = '/'
+
+
+
+class CommentCreateView(LoginRequiredMixin, DjangoCreateView):
+    model = Comment
+    form_class = CommentForm
+
+    def form_valid(self, form):
+        post = get_object_or_404(Post, pk=self.kwargs['pk'])
+        form.instance.post = post
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+    
+class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, DjangoUpdateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'blog/comment_form.html'
 
     def test_func(self):
-        post = self.get_object()
-        return self.request.user == post.author
+        comment = self.get_object()
+        return self.request.user == comment.author
+    
+class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DjangoDeleteView):
+    model = Comment
+    template_name = 'blog/comment_confirm_delete.html'
+
+    def get_success_url(self):
+        return reverse_lazy('post-detail', kwargs={'pk': self.object.post.pk})
+
+    def test_func(self):
+        comment = self.get_object()
+        return self.request.user == comment.author
+    
