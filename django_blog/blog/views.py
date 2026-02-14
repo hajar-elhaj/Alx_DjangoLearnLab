@@ -70,7 +70,7 @@ def profile_view(request):
 
 
 # List all posts
-class PostListView(ListView):
+class ListView(ListView):
     model = Post
     template_name = 'blog/post_list.html'
     context_object_name = 'posts'
@@ -78,14 +78,14 @@ class PostListView(ListView):
 
 
 # Detail of a single post
-class PostDetailView(DetailView):
+class DetailView(DetailView):
     model = Post
     template_name = 'blog/post_detail.html'
     context_object_name = 'post'
 
 
 # Create a new post
-class PostCreateView(LoginRequiredMixin, CreateView):
+class CreateView(LoginRequiredMixin, CreateView):
     model = Post
     template_name = 'blog/post_form.html'
     fields = ['title', 'content']
@@ -96,7 +96,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 
 
 # Update a post
-class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class UpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
     template_name = 'blog/post_form.html'
     fields = ['title', 'content']
@@ -107,7 +107,7 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 
 # Delete a post
-class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+class DeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Post
     template_name = 'blog/post_confirm_delete.html'
     success_url = reverse_lazy('post-list')
