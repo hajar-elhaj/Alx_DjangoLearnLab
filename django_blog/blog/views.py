@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
-from .forms import UserRegisterForm, UserUpdateForm
+from .forms import UserRegisterForm, UserUpdateForm, PostForm
 
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -21,7 +21,6 @@ from .forms import CommentForm
 from django.shortcuts import get_object_or_404
 
 from django.db.models import Q
-from taggit.models import Tag
 
 # User Registration
 def register_view(request):
@@ -104,7 +103,7 @@ class DetailView(DjangoDetailView):
 # Create a new post
 class CreateView(LoginRequiredMixin, DjangoCreateView):
     model = Post
-    form_class = PostForm  # use the form with TagWidget
+    form_class = PostForm  # Now this is defined
     template_name = 'blog/post_form.html'
 
     def form_valid(self, form):
