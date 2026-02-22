@@ -6,6 +6,10 @@ from rest_framework.permissions import IsAuthenticated
 from .models import User
 from .serializers import RegisterSerializer, LoginSerializer, UserSerializer
 
+from rest_framework.decorators import api_view, permission_classes
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -42,3 +46,34 @@ class ProfileView(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user
+    
+
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def follow_user(request, user_id):
+    try:
+        user_to_follow = User.objects.get(id=user_id)
+
+        if user_to_follow == request.user:
+            return Response({"error": "You cannot follow yourself"}, status=400)
+
+        request.user.following.add(user_to_follow)
+
+        return Response({"message": "User followed successfully"})
+    except User.DoesNotExist:
+        return Response({"error": "User not found"}, status=404)
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def unfollow_user(request, user_id):
+    try:
+        user_to_unfollow = User.objects.get(id=user_id)
+
+        request.user.following.remove(user_to_unfollow)
+
+        return Response({"message": "User unfollowed successfully"})
+    except User.DoesNotExist:
+        return Response({"error": "User not found"}, status=404)
